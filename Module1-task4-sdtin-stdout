@@ -1,0 +1,8 @@
+#файл обработки
+
+import sys 
+for line in sys.stdin:
+    sys.stdout.write(line)
+
+#работа через терминал    
+#python3 файл обработки < файл с данными > куда их на поместить
