@@ -1,0 +1,29 @@
+from datetime import datetime, date, time, timedelta
+def convert_date(date_str: str, input_format, output_format):
+    format_dict = {
+        "DD.MM.YYYY": "%d.%m.%Y",      # 26.01.2024
+        "YYYY-MM-DD": "%Y-%m-%d",      # 2024-01-26
+        "Month DD, YYYY": "%B %d, %Y", # January 26, 2024
+        "DD/MM/YY": "%d/%m/%y",        # 26/01/24
+        "DD-MM-YYYY": "%d-%m-%Y",      # 26-01-2024
+        "YYYY/MM/DD": "%Y/%m/%d",      # 2024/01/26
+        "YY.MM.DD": "%y.%m.%d",        # 24.01.26
+        "HH:MM DD.MM.YYYY": "%H:%M %d.%m.%Y", # 14:30 26.01.2024
+    }
+    input = str(format_dict.get(input_format))
+    output = str(format_dict.get(output_format))
+    date = datetime.strptime(date_str, input)
+    result = date.strftime(output)
+    return result
+if __name__ == "__main__":
+    # Пример 1: DD.MM.YYYY → YYYY-MM-DD
+    result1 = convert_date("26.01.2024", "DD.MM.YYYY", "YYYY-MM-DD")
+    print(f"26.01.2024 → {result1}")  # 2024-01-26
+    
+    # Пример 2: YYYY-MM-DD → Month DD, YYYY
+    result2 = convert_date("2024-01-26", "YYYY-MM-DD", "Month DD, YYYY")
+    print(f"2024-01-26 → {result2}")  # January 26, 2024
+    
+    # Пример 3: DD/MM/YY → DD.MM.YYYY
+    result3 = convert_date("26/01/24", "DD/MM/YY", "DD.MM.YYYY")
+    print(f"26/01/24 → {result3}")  # 26.01.2024
