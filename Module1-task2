@@ -25,7 +25,7 @@ def analyze_work_time(intervals):
         "intervals_count": len(intervals),
         "workday_length": round(workday,2)       
     }
-
+#Тесты
 if __name__ == "__main__":
     print("\n=== Тесты для Задания 1.2 ===")
 
