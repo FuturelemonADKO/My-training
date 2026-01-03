@@ -1,0 +1,30 @@
+from datetime import datetime, date, time, timedelta
+def calculator_date(start_date: str, days: int, operation: str ="add"):
+    date=datetime.strptime(start_date, "%d.%m.%Y")   
+    if operation == "add":
+        res=date+timedelta(days=days)
+    elif operation == "subtract":
+        res=date-timedelta(days=days)
+    else:
+        return "ERROR"
+    return res.strftime("%d.%m.%Y")
+
+
+
+# Тестируем функцию
+if __name__ == "__main__":
+    # Тест 1: Прибавление дней
+    test1 = calculator_date("15.01.2024", 10, "add")
+    print(f"15.01.2024 + 10 дней = {test1}")  # Ожидается: 25.01.2024
+    
+    # Тест 2: Вычитание дней
+    test2 = calculator_date("15.01.2024", 5, "subtract")
+    print(f"15.01.2024 - 5 дней = {test2}")   # Ожидается: 10.01.2024
+    
+    # Тест 3: Неправильная операция
+    test3 = calculator_date("15.01.2024", 5, "multiply")
+    print(test3)  # Ожидается сообщение об ошибке
+    
+    # Тест 4: Переход через месяц
+    test4 = calculator_date("25.01.2024", 10, "add")
+    print(f"25.01.2024 + 10 дней = {test4}")  # Ожидается: 04.02.2024
