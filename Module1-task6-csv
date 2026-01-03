@@ -1,0 +1,10 @@
+#чтение csv как словаря на каждой строке
+#Данные:name,age,city
+#       Иван,25,Москва
+#       Мария,30,Санкт-Петербург
+#       Алексей,35,Казань
+import csv
+with open(r"data.csv",encoding="utf-8") as file:
+    reader=csv.DictReader(file)
+    for i in reader:
+        print(i)
