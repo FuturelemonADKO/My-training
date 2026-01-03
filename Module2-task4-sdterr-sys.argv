@@ -1,0 +1,16 @@
+import sys
+def grep_filter(word):
+    for line in sys.stdin:
+        if word in line:
+            print(line,end="")
+def main():
+    # Проверяем, что передано ещё что-то кроме имени скрипта
+    if len(sys.argv) < 2:
+        print("Ошибка: Не указано слово для поиска", file=sys.stderr) #передача в ошибку
+        sys.exit(1)  # Выход с программы с ошибкой выше
+
+    search_word = sys.argv[1]
+    grep_filter(search_word)
+
+if __name__ == "__main__":
+    main()
