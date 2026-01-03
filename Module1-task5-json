@@ -1,0 +1,62 @@
+import json
+import os
+from datetime import date, datetime, timedelta 
+def analyze_work_time(intervals):
+    if not intervals:
+        return {
+            'total_hours': 0.0,
+            'intervals_count': 0,
+            'workday_length': 0.0
+        }
+    base_date = datetime.now().date()
+    st=[]
+    end=[]
+    total_hours = 0.0
+    for st_time,end_time in intervals:
+        st_time=datetime.combine(base_date, datetime.strptime(st_time, "%H:%M").time())
+        end_time=datetime.combine(base_date, datetime.strptime(end_time,"%H:%M").time())
+        if end_time < st_time:
+            end_time += timedelta(days=1)
+        total_hours += (end_time-st_time).total_seconds() / 3600
+        st.append(st_time)
+        end.append(end_time)
+    workday=(max(end)-min(st)).total_seconds() / 3600
+        
+    return{
+        "total_hours": round(total_hours,2),
+        "intervals_count": len(intervals),
+        "workday_length": round(workday,2)       
+    }
+
+
+def save_work_stats(date, filename="work_stats.json"):
+    date_str=analyze_work_time(date)
+    if os.path.exists(filename) and date_str!=[]:    
+        return False
+    else:
+        with open(filename,"w") as file:
+            json.dump(date_str, file)
+        
+
+
+# Убери существующий файл для чистого теста
+if os.path.exists("work_stats.json"):
+    os.remove("work_stats.json")
+
+# Используй исправленную функцию save_work_stats
+save_work_stats([("09:00", "12:00"), ("13:00", "18:00")])
+
+# Проверь, что файл создался
+if os.path.exists("work_stats.json"):
+    print("✅ Файл создан")
+    
+    # Прочитай содержимое
+    with open("work_stats.json", "r", encoding="utf-8") as f:
+        content = f.read()
+        print(f"Содержимое файла:\n{content}")
+        
+        # Попробуй загрузить как JSON
+        data = json.loads(content)
+        print(f"\nДанные за 26.01.2024: {data.get('26.01.2024')}")
+else:
+    print("❌ Файл не создан")
