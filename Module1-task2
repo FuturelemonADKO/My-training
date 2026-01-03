@@ -1,0 +1,71 @@
+from datetime import datetime, date, time, timedelta
+def analyze_work_time(intervals):
+    if not intervals:
+        return {
+            'total_hours': 0.0,
+            'intervals_count': 0,
+            'workday_length': 0.0
+        }
+    base_date = datetime.now().date()
+    st=[]
+    end=[]
+    total_hours = 0.0
+    for st_time,end_time in intervals:
+        st_time=datetime.combine(base_date, datetime.strptime(st_time, "%H:%M").time())
+        end_time=datetime.combine(base_date, datetime.strptime(end_time,"%H:%M").time())
+        if end_time < st_time:
+            end_time += timedelta(days=1)
+        total_hours += (end_time-st_time).total_seconds() / 3600
+        st.append(st_time)
+        end.append(end_time)
+    workday=(max(end)-min(st)).total_seconds() / 3600
+        
+    return{
+        "total_hours": round(total_hours,2),
+        "intervals_count": len(intervals),
+        "workday_length": round(workday,2)       
+    }
+
+if __name__ == "__main__":
+    print("\n=== Тесты для Задания 1.2 ===")
+
+    # Тест 1: Стандартный рабочий день
+    test1 = analyze_work_time([("09:00", "12:00"), ("13:00", "18:00")])
+    assert test1['total_hours'] == 8.0, f"Ожидалось 8.0, получено {test1['total_hours']}"
+    assert test1['intervals_count'] == 2, f"Ожидалось 2 интервала, получено {test1['intervals_count']}"
+    assert test1['workday_length'] == 9.0, f"Ожидалась длина дня 9.0, получено {test1['workday_length']}"
+    print("✅ Тест 1 пройден: Стандартный рабочий день")
+
+    # Тест 2: Несколько интервалов
+    test2 = analyze_work_time([("08:00", "10:00"), ("11:00", "13:00"), ("14:00", "17:00")])
+    assert test2['total_hours'] == 7.0, f"Ожидалось 7.0, получено {test2['total_hours']}"
+    assert test2['intervals_count'] == 3, f"Ожидалось 3 интервала, получено {test2['intervals_count']}"
+    assert test2['workday_length'] == 9.0, f"Ожидалась длина дня 9.0, получено {test2['workday_length']}"
+    print("✅ Тест 2 пройден: Несколько интервалов")
+
+    # Тест 3: Дробные часы
+    test3 = analyze_work_time([("09:30", "12:45"), ("13:15", "17:30")])
+    # Расчет: (12:45 - 09:30 = 3.25) + (17:30 - 13:15 = 4.25) = 7.5
+    assert test3['total_hours'] == 7.5, f"Ожидалось 7.5, получено {test3['total_hours']}"
+    print("✅ Тест 3 пройден: Дробные часы")
+
+    # Тест 4: Пустой список
+    test4 = analyze_work_time([])
+    assert test4['total_hours'] == 0.0, f"Ожидалось 0.0, получено {test4['total_hours']}"
+    assert test4['intervals_count'] == 0, f"Ожидалось 0 интервалов, получено {test4['intervals_count']}"
+    assert test4['workday_length'] == 0.0, f"Ожидалась длина дня 0.0, получено {test4['workday_length']}"
+    print("✅ Тест 4 пройден: Пустой список")
+
+    # Тест 5: Ночная смена (после полуночи)
+    test5 = analyze_work_time([("22:00", "02:00")])
+    # 22:00 до 02:00 следующего дня = 4 часа
+    assert test5['total_hours'] == 4.0, f"Ожидалось 4.0, получено {test5['total_hours']}"
+    print("✅ Тест 5 пройден: Ночная смена")
+
+    # Тест 6: Интервалы не по порядку
+    test6 = analyze_work_time([("14:00", "18:00"), ("09:00", "12:00")])
+    assert test6['total_hours'] == 7.0, f"Ожидалось 7.0, получено {test6['total_hours']}"
+    assert test6['workday_length'] == 9.0, f"Ожидалась длина дня 9.0, получено {test6['workday_length']}"
+    print("✅ Тест 6 пройден: Интервалы не по порядку")
+
+    print("\n🎉 Все тесты для Задания 1.2 пройдены успешно!")
