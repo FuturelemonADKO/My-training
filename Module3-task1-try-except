@@ -1,0 +1,46 @@
+def calculator(a,b,operation):
+    valid_operations = ["+", "-", "*", "/", "**"]
+    if operation not in valid_operations:
+        print("Неизвестная операция")
+        res=None
+    try:
+        if operation=="+":
+            res=a+b
+        elif operation=="-":
+            res=a-b
+        elif operation=="*":
+            res=a*b
+        elif operation=="/":
+            res=a/b
+        elif operation=="**":
+            res=a**b            
+    except ZeroDivisionError:
+        print("Деление на 0!")
+        res=None
+    except TypeError:
+        print("Неверный тип данных!")
+        res=None
+    except Exception as e:
+        print(f"Неожиданная ошибка: {e}")
+        res=None
+    else:       
+        return res
+    finally:
+        print("Оперцация выполнена!")
+
+
+if __name__ == "__main__":
+    # Тест 1: Нормальная работа
+    print(calculator(10, 2, "+"))  # 12
+
+    # Тест 2: Деление на ноль
+    print(calculator(10, 0, "/"))  # Ошибка: Деление на ноль!, None
+
+    # Тест 3: Неверный тип
+    print(calculator(10, "2", "+"))  # Ошибка типа данных, None
+
+    # Тест 4: Неизвестная операция
+    print(calculator(10, 2, "&"))  # Ошибка: Неизвестная операция, None
+
+    # Тест 5: Возведение в степень
+    print(calculator(2, 3, "**"))  # 8
