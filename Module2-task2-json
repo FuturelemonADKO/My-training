@@ -38,12 +38,13 @@ def save_work_stats(date, filename="work_stats.json"):
             json.dump(date_str, file)
         
 
+#Тест
+
 
 # Убери существующий файл для чистого теста
 if os.path.exists("work_stats.json"):
     os.remove("work_stats.json")
 
-# Используй исправленную функцию save_work_stats
 save_work_stats([("09:00", "12:00"), ("13:00", "18:00")])
 
 # Проверь, что файл создался
