@@ -1,0 +1,212 @@
+from datetime import datetime
+
+#безопасный выбор действия (1-6)
+def get_number(num):
+    try:    
+        if 1<=int(num)<=6:
+            return int(num)
+        else:
+            print("Ошибка: введите число от 1 до 6")
+    except TypeError:
+        print("Ошибка: введите число от 1 до 6")
+    except ValueError:
+        print("Ошибка: введите число от 1 до 6")
+
+#безопасный импут
+def safe_input(text=None):
+    while True:
+        try:  
+            return int(input(text))
+        except ValueError:
+            print("ОШИБКА: Введите число, а не текст!")            
+            continue        
+
+#Повтор действия
+def ask_repeat():
+    while True:
+        choice = input("Хотите повторить? (да/нет): ").lower()
+        if choice == "да":
+            return True
+        elif choice == "нет":
+            return False
+        else:
+            print("Ошибка: введите 'да' или 'нет'")
+            
+#безопасный калькулятор
+def calculator(a,b,operation):   
+    try:          
+        if operation=="+":
+            res=a+b 
+        elif operation=="-":
+            res=a-b
+        elif operation=="*":
+            res=a*b
+        elif operation=="/":
+            res=a/b
+        elif operation=="**":
+            res=a**b           
+    except ZeroDivisionError:
+        err= "Деление на 0!"
+        return err
+    except TypeError:
+        err= "Неверный тип данных!"
+        return err
+    except OverflowError:
+        err= "Слишком большое число!"
+        return err
+    except Exception as e:
+        err = f"Неожиданная ошибка: {e}"
+        return err
+    else:       
+        return res
+
+
+#сохранение в истории
+def save_to_history(operation, result, status):
+    try:
+        date=datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+        with open(r"history.txt","a",encoding="utf-8") as file:
+            print(f"{date} | {operation} {result} | {status}",file=file)
+            
+    except PermissionError:
+        return "Нет прав доступа("
+    except OSError as e:
+        print(f"Ошибка системы: {e}")
+    except Exception as e:
+        return f"Неожиданная ошибка: {e}"
+
+#чтение истории последние(n)    
+def read_history(limit=None):
+    try:
+        with open(r"history.txt","r",encoding="utf-8") as file:
+            if limit==None or (len(file.readlines())<=10 and limit==10):
+                file.seek(0)             
+                return file.read()
+            else:
+                file.seek(0)
+                return file.readlines()[-limit:]
+    except FileNotFoundError:
+        return "Файл не найден"
+    except PermissionError:
+        return "Нет прав доступа("
+    except Exception as e:
+        return f"Неожиданная ошибка: {e}"    
+
+#Чистка истории    
+def clear_history():
+    try:
+        with open(r"history.txt","w",encoding="utf-8"):
+            pass
+    except PermissionError:
+        return "Нет прав доступа("
+    except OSError as e:
+        print(f"Ошибка системы: {e}")
+    except Exception as e:
+        return f"Неожиданная ошибка: {e}"
+    else:
+        print("История очищена!")
+
+#Показ статистики        
+def show_statistics():
+    try:
+        with open(r"history.txt","r",encoding="utf-8") as file:
+            lines=[line.strip() for line in file.readlines()]
+            success=list(filter(lambda x: "Успех" in x, lines))
+            mistakes=list(filter(lambda x: "Ошибка" in x, lines))
+            print(f'''    === СТАТИСТИКА КАЛЬКУЛЯТОРА ===
+
+ЗА ВСЁ ВРЕМЯ (из файла истории):
+• Всего операций: {len(lines)}
+• Успешных: {len(success)} ({round(len(success)/len(lines)*100,1)}%)
+• С ошибками: {len(mistakes)} ({round(len(mistakes)/len(lines)*100,1)}%)
+
+ТИПЫ ОШИБОК (за всё время):
+• Деление на ноль: {len(list(filter(lambda x: "Деление на 0!" in x ,mistakes)))} раз
+• Некорректный ввод: {len(list(filter(lambda x: "Неверный тип данных!" in x ,mistakes)))} раза  
+• Переполнение: {len(list(filter(lambda x: "Слишком большое число!" in x ,mistakes)))} раза
+• Другие ошибки: {len(list(filter(lambda x: "Неожиданная ошибка:" in x ,mistakes)))} раза
+
+САМЫЕ ЧАСТЫЕ ОПЕРАЦИИ:
+1. Сложение (+): {len(list(filter(lambda x: "+" in x, lines)))} раз
+2. Умножение (*): {len(list(filter(lambda x: "*" in x, lines)))} раз
+3. Деление (/): {len(list(filter(lambda x: "/" in x, lines)))} раз
+4. Вычитание (-): {len(list(filter(lambda x: "-" in x, lines)))} раз
+5. Возведение в степень (**): {len(list(filter(lambda x: "**" in x, lines)))} раз''')
+    
+    except PermissionError:
+        return "Нет прав доступа("
+    except OSError as e:
+        print(f"Ошибка системы: {e}")
+    except Exception as e:
+        return f"Неожиданная ошибка: {e}"
+
+#Главная функция              
+def main():
+    while True:
+        try:     
+            print(f'''=== УМНЫЙ КАЛЬКУЛЯТОР ===
+
+            1. Новая операция
+            2. Посмотреть историю (последние 10)
+            3. Вся история
+            4. Очистить историю
+            5. Статистика
+            6. Выход    
+            ''')
+
+            number=get_number(input("Выберите действие (1-6): "))
+            if number is None:
+                print("Неверное действие!")
+                return
+
+            #1. Новая операция и сохранение ее в истории
+            if number==1:    
+                a=safe_input("Ввидете первое число: ")
+                operation=input("Введите операцию (+, -, *, /, **): ")
+                while operation not in ["+", "-", "*", "/", "**"]:
+                    operation=input("Неизвестная операция\nПопробйте заново (+, -, *, /, **): ")
+                b=safe_input("Ввидете второе число: ")
+                result=calculator(a,b,operation)
+                if type(result)==str:            
+                    print(f"Результат: ОШИБКА:{result}")
+                    result=f'ОШИБКА:{result}'
+                    operation=f'{a} {operation} {b} ='
+                    save_to_history(operation,result,"Ошибка")   
+                    if not ask_repeat():
+                        break
+                else:
+                    print(f"Результат: {a} {operation} {b} = {result}")   
+                    operation=f'{a} {operation} {b} ='
+                    save_to_history(operation, result,"Успех")
+                    print()
+                    print("Операция сохранена в историю.")
+                    break    
+
+            #2. Посмотреть историю (последние 10)
+            if number==2:
+                print(*read_history(10),sep="")
+            
+            #3. Вся история
+            if number==3:
+                print(read_history())
+            
+            #4. Очистить историю
+            if number==4:
+                clear_history()
+            
+            if number==5:
+                show_statistics()
+            
+            if number==6:
+                exit()
+                    
+        except KeyboardInterrupt:
+            print("\nЗавершение работы...")
+            break
+        except OSError as e:
+            print(f"Ошибка системы: {e}")
+        except Exception as e:
+            return f"Неожиданная ошибка: {e}"
+    
+if __name__ == "__main__":
+    main()        
