@@ -2,7 +2,7 @@ def calculator(a,b,operation):
     valid_operations = ["+", "-", "*", "/", "**"]
     if operation not in valid_operations:
         print("Неизвестная операция")
-        res=None
+        return None
     try:
         if operation=="+":
             res=a+b
@@ -16,17 +16,17 @@ def calculator(a,b,operation):
             res=a**b            
     except ZeroDivisionError:
         print("Деление на 0!")
-        res=None
+        return None
     except TypeError:
         print("Неверный тип данных!")
-        res=None
+        return None
     except Exception as e:
         print(f"Неожиданная ошибка: {e}")
-        res=None
+        return None
     else:       
         return res
     finally:
-        print("Оперцация выполнена!")
+        print("Операция выполнена!")
 
 
 if __name__ == "__main__":
