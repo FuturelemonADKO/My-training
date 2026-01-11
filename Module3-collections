@@ -1,0 +1,69 @@
+from collections import Counter, defaultdict, deque, namedtuple
+#1
+text="раз два три раз два раз раз три четыре"
+c = Counter(text.split())
+print(c.most_common(3))
+print(Counter("абракадабра"))
+c1 = Counter(a=3, b=2, c=1)
+c2 = Counter(a=1, b=2, c=3, d=4)
+print(c1+c2)
+
+#2
+list1=[("фрукты", "яблоко"), ("овощи", "морковь"), ("фрукты", "банан"), ("овощи", "огурец")]
+dd1=defaultdict(list)
+for k,v in list1:
+    dd1[k].append(v)
+print(dict(dd1))
+dd2=defaultdict(int)
+for i in text.split():
+    dd2[i[0]]+=1
+print(dict(dd2))
+dd3=defaultdict(set)
+for k,v in list1:
+    dd3[k].add(v)
+print(dict(dd3))
+
+#3
+dq=deque([1,2,4,6,6],maxlen=5)
+for i in range(1,8):
+    dq.append(i)
+dq.appendleft(0)
+dq.rotate(2)
+dq.pop()
+dq.popleft()
+print(dq)
+
+#4
+Student=namedtuple("Student",["name", "age", "grades"])
+stud1=Student("Alex",18,[4,5,4,2,3,5])
+stud2=Student("Elena",20,[4,5,4])
+stud3=Student("Alex",19,[2,2,2,2,2,1,1,1,5])
+
+#Среднее оценка студента
+def avg_grades(stud):
+    return round(sum(stud.grades) / len(stud.grades),2)
+
+print(avg_grades(stud2))
+l_sd=[stud1,stud2,stud3]
+mx=0
+for st in l_sd:
+    cur=avg_grades(st)
+    if cur>mx:
+        mx=cur
+        stud=st
+print(stud,max)
+
+#5
+text1=input()
+count=Counter([x for x in text1.split()])
+dd4=defaultdict(list)
+for word in text1.split():
+    alp=word[0]
+    dd4[alp].append(word)
+dd5=defaultdict(int)
+for i in text1.split():
+    dd5[i[0]]+=1
+
+print(count.most_common(5))
+print(v for v in dd4.values() if len(v)==1)
+print(max(dd5.values()))
