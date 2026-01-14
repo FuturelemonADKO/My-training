@@ -1,0 +1,124 @@
+from abc import ABC,abstractmethod
+from math import pi
+
+#1
+class Employee:
+    def __init__(self,name,salary):
+        self.name=name
+        self.salary=salary
+    def work(self):
+        return 'Работник выполняет работу'
+    
+class Manager(Employee):
+    def __init__(self, name, salary,department):
+        super().__init__(name, salary)
+        self.department=department
+    def work(self):
+        return f'Manager work in {self.department}'
+    
+class Developer(Employee):
+    def __init__(self, name, salary,prog_language):
+        super().__init__(name, salary)
+        self.prog_language=prog_language
+    def work(self):
+        return f'Developer work in {self.prog_language}'
+    
+class Intern(Developer):
+    def __init__(self, name, salary, prog_language,u):
+        super().__init__(name, salary, prog_language)
+        self.university=u
+    def work(self):
+        return f"Intern study in {self.university}"
+    
+#2
+class Figure(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+    @abstractmethod
+    def perimeter(self):
+        pass
+    def info(self):
+        return f'Фигура с площадью {self.area()} и периметром {self.perimeter()}'
+
+class Rectangle(Figure):
+    def __init__(self,w,h):
+        self.width=w
+        self.height=h
+    def area(self):
+        return self.height*self.width
+    def perimeter(self):
+        return 2*(self.height+self.width)
+    
+class Circle(Figure):
+    def __init__(self,radius):
+        self.radius=radius
+    def area(self):
+        return self.radius**2*pi
+    def perimeter(self):
+        return 2*pi*self.radius
+
+class Triangle(Figure):
+    def __init__(self,a,b,c,h):
+        self.side1=a
+        self.side2=b
+        self.side3=c
+        self.height=h
+    def area(self):
+        return (1/2)*self.side1*self.height
+    def perimeter(self):
+        return self.side1+self.side2+self.side3
+    
+#3
+#Миксины (примеси) - классы, которые добавляют функциональность
+class printable:
+    def print_info(self):
+        l = []
+        for key, value in self.__dict__.items():
+            l.append(f"{key}: {value}")
+        return f"{self.__class__.__name__}: " + ", ".join(l)
+
+#тоже миксин
+class saveable:
+    def save_to_file(self, filename):
+        try:
+            with open(filename, 'a', encoding='utf-8') as f:
+                for key, value in self.__dict__.items():
+                    print(f"{key}: {value}",file=f)
+                
+            return f"Данные сохранены в {filename}"
+        except Exception as e:
+            return f"Ошибка при сохранении: {e}"
+
+class Person:
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+class Student(Person, printable, saveable):
+    def __init__(self, name, age, student_id):
+        Person.__init__(self, name, age)  # Явно вызываем конструктор Person
+        self.id = student_id
+    
+#4
+class Employee2(ABC):
+    @abstractmethod
+    def calculate_salary(self):
+        pass
+class HourlyEmployee(Employee2):
+    def __init__(self,hours,rate):
+        self.hours_work=hours
+        self.hourly_rate=rate
+    def calculate_salary(self):
+        return self.hourly_rate*self.hours_work
+class SalariedEmployee(Employee2):
+    def __init__(self,monthly_salary):
+        self.monthly_salary=monthly_salary
+    def calculate_salary(self):
+        return self.monthly_salary
+class CommissionEmployee(Employee2):
+    def __init__(self,monthly_salary,sales,commission_rate):
+        self.monthly_salary=monthly_salary
+        self.sales=sales
+        self.commission_rate=commission_rate
+    def calculate_salary(self):
+        return self.monthly_salary+self.sales*self.commission_rate
