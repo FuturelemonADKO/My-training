@@ -161,11 +161,11 @@ def main():
 
             #1. Новая операция и сохранение ее в истории
             if number==1:    
-                a=safe_input("Ввидете первое число: ")
+                a=safe_input("Введете первое число: ")
                 operation=input("Введите операцию (+, -, *, /, **): ")
                 while operation not in ["+", "-", "*", "/", "**"]:
-                    operation=input("Неизвестная операция\nПопробйте заново (+, -, *, /, **): ")
-                b=safe_input("Ввидете второе число: ")
+                    operation=input("Неизвестная операция\nПопробуйте заново (+, -, *, /, **): ")
+                b=safe_input("Введете второе число: ")
                 result=calculator(a,b,operation)
                 if type(result)==str:            
                     print(f"Результат: ОШИБКА:{result}")
